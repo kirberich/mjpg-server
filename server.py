@@ -47,11 +47,13 @@ class BotHandler(http.Request, object):
         self.setHeader('Content-Type', "multipart/x-mixed-replace;boundary=%s" % boundary)
 
         while True:
-            content = self.get_frame()
-            self.write("Content-Type: image/jpg\n")
-            self.write("Content-Length: %s\n\n" % (len(content)))
-            self.write(content)
-            self.write("--%s\n" % (boundary))
+            if not self.transport._isSendBufferFull():
+                content = self.get_frame()
+                self.write("Content-Type: image/jpg\n")
+                self.write("Content-Length: %s\n\n" % (len(content)))
+                self.write(content)
+                self.write("--%s\n" % (boundary))
+
             if self.transport.disconnected:
                 break
 
