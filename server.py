@@ -3,7 +3,7 @@ from twisted.web.http import HTTPChannel
 from twisted.internet import reactor, defer
 import threading
 
-from settings import LIMIT_FPS
+from settings import LIMIT_FPS, PASSWORD
 
 class BotHandler(http.Request, object):
     BOUNDARY = "jpgboundary"
