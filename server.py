@@ -91,6 +91,8 @@ class BotHandler(http.Request, object):
         try:
             if command.startswith("stream"):
                 return self.serve_stream()
+            elif command == "snapshot":
+                return self.serve_frame()
             else:
                 return self.serve_stream_container()
         except Exception, e:
