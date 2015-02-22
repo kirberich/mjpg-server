@@ -64,7 +64,12 @@ class BotHandler(http.Request, object):
 
     def serve_stream_container(self):
         headers = [("content-type", "text/html")]
-        content = "<html><head><title>MJPG Server</title></head><body><img src='/stream.avi' alt='stream'/></body></html>"
+
+        url = '/stream.avi'
+        if 'pwd' in self.args:
+            url += '?pwd={}'.format(self.args['pwd'][0])
+
+        content = "<html><head><title>MJPG Server</title></head><body><img src='{}' alt='stream'/></body></html>".format(url)
         self.render(content, headers)
 
     def serve_frame(self):
@@ -77,6 +82,11 @@ class BotHandler(http.Request, object):
         if command_args_list:
             command = command_args_list[0]
             args = command_args_list[1:]
+
+        if PASSWORD:
+            if 'pwd' not in self.args or self.args['pwd'][0] != PASSWORD:
+                self.setResponseCode(403)
+                return self.simple_render("Password required")
 
         try:
             if command.startswith("stream"):
