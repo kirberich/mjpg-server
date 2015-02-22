@@ -52,6 +52,9 @@ class BotHandler(http.Request, object):
             self.write("Content-Length: %s\n\n" % (len(content)))
             self.write(content)
             self.write("--%s\n" % (boundary))
+            if self.transport.disconnected:
+                break
+
             yield self.wait(0.05)
 
     def serve_stream_container(self):
