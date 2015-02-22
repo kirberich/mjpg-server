@@ -84,7 +84,7 @@ class BotHandler(http.Request, object):
             args = command_args_list[1:]
 
         if PASSWORD:
-            if 'pwd' not in self.args or self.args['pwd'][0] != PASSWORD:
+            if 'pwd' not in self.args or self.args['pwd'][0].split("?")[0] != PASSWORD:
                 self.setResponseCode(403)
                 return self.simple_render("Password required")
 
