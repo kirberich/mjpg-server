@@ -42,6 +42,22 @@ class Recorder(object):
         if DEBUG:
             print "FPS: %s" % round(self.frame_rate)
 
+    def rotate(self, frame):
+        rotate_by = settings.ROTATE_IMAGE
+
+        if not rotate_by:
+            return frame
+
+        if rotate_by in [90, 270]:
+            frame = cv2.transpose(frame)
+
+        if rotate_by == 90:
+            frame = cv2.flip(frame, 1)
+        elif rotate_by == 180:
+            frame = cv2.flip(frame, 0)
+
+        return frame
+
     def buffer_frame(self, frame):
         (retval, jpg_frame) = cv2.imencode(".jpg", frame, (cv.CV_IMWRITE_JPEG_QUALITY, settings.JPG_QUALITY))
         jpg_frame = jpg_frame.tostring()
@@ -50,4 +66,5 @@ class Recorder(object):
     def handle_frame(self):
         frame = cv.QueryFrame(self.capture)
         frame_array = numpy.asarray(frame[:,:])
+        frame_array = self.rotate(frame_array)
         self.buffer_frame(frame_array)
