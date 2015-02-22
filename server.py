@@ -3,6 +3,8 @@ from twisted.web.http import HTTPChannel
 from twisted.internet import reactor, defer
 import threading
 
+from settings import LIMIT_FPS
+
 class BotHandler(http.Request, object):
     BOUNDARY = "jpgboundary"
 
@@ -17,6 +19,7 @@ class BotHandler(http.Request, object):
 
     def __init__(self, api, *args, **kwargs):
         self.api = api
+        self.frame_delay = 1.0/LIMIT_FPS if LIMIT_FPS else 0.05
         super(BotHandler, self).__init__(*args, **kwargs)
 
     def render(self, content, headers):
@@ -57,7 +60,7 @@ class BotHandler(http.Request, object):
             if self.transport.disconnected:
                 break
 
-            yield self.wait(0.05)
+            yield self.wait(self.frame_delay)
 
     def serve_stream_container(self):
         headers = [("content-type", "text/html")]
